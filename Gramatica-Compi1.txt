@@ -1,0 +1,71 @@
+<programa> ::= <declaraciones_globales> <funcion_main>
+
+<declaraciones_globales> ::= <declaracion_global> <declaraciones_globales> | ε
+
+<declaracion_global> ::= "global" <tipo_dato> <identificador> "=" <valor_global> ";"
+
+<tipo_dato> ::= "int" | "double" | "string" | "bool"
+
+<identificador> ::= ID
+
+<valor_global> ::= <expresion_global> | <referencia_json> | STR | CHAR | BOOLEANO
+
+<expresion_global> ::= ENTERO | DECIMAL | ID
+
+<funcion_main> ::= PR_VOID PR_MAIN "(" ")" "{" <sentencias> "}"
+
+<sentencias> ::= <sentencia> <sentencias> | ε
+
+<sentencia> ::= <sentencia_print> | <sentencia_declaracion> | <sentencia_if> | <sentencia_for> | <sentencia_switch> | <sentencia_while> | <sentencia_do_while> | <funcion_globales> | <funcion_grafica> | <funciones>
+
+<sentencia_print> ::= PR_CONSOLE "." PR_WRITE "(" <expresion> ")" ";"
+
+<sentencia_declaracion> ::= <tipo_dato> <identificador> "=" <expresion> ";" | <identificador> "=" <expresion> ";" | <tipo_dato> "[" "]" <identificador> "=" <lista> ";"
+
+<lista> ::= "[" <elementos> "]"
+
+<elementos> ::= <expresion> | <elementos> "," <elementos>
+
+<expresion> ::= <expresion> "+" <expresion> | <expresion> "-" <expresion> | <expresion> "*" <expresion> | <expresion> "/" <expresion> | <expresion> ">" <expresion> | <expresion> "<" <expresion> | <expresion> ">=" <expresion> | <expresion> "<=" <expresion> | <expresion> "==" <expresion> | <expresion> "!=" <expresion> | <expresion> "and" <expresion> | <expresion> "or" <expresion> | "not" <expresion> | "(" <expresion> ")" | ENTERO | DECIMAL | ID | STR | CHAR | BOOLEANO | <referencia_json>
+
+<referencia_json> ::= DOLLAR "{" PR_NEWVALOR "," STR "," STR "}"
+
+<funcion_globales> ::= PR_VOID PR_DGLOBALES "(" ")" "{" <sentencias_globales> "}"
+
+<sentencias_globales> ::= <sentencia_global> <sentencias_globales> | <sentencia_global>
+
+<sentencia_global> ::= PR_STRING ID "=" STR ";" | PR_STRING ID "=" <referencia_json> ";" | PR_DOUBLE ID "=" DECIMAL ";" | PR_DOUBLE ID "=" <referencia_json> ";"
+
+<funcion_grafica> ::= PR_VOID PR_GBARRAS "(" ")" "{" <sentencias_graficas> "}" | PR_VOID PR_GPIE "(" ")" "{" <sentencias_graficas> "}"
+
+<sentencias_graficas> ::= <sentencia_grafica> <sentencias_graficas> | <sentencia_grafica>
+
+<sentencia_grafica> ::= PR_STRING PR_TITULO "=" <valor_string> ";" | PR_STRING PR_TITULOX "=" <valor_string> ";" | PR_STRING PR_TITULOY "=" <valor_string> ";" | PR_STRING "[" "]" PR_EJEX "=" "[" <elementos_string> "]" ";" | PR_DOUBLE "[" "]" PR_VALORES "=" "[" <elementos_double> "]" ";"
+
+<elementos_double> ::= <valor_double> | <elementos_double> "," <elementos_double>
+
+<valor_double> ::= DECIMAL | <referencia_json> | ID
+
+<elementos_string> ::= <valor_string> | <elementos_string> "," <elementos_string>
+
+<valor_string> ::= STR | <referencia_json> | ID
+
+<sentencia_if> ::= PR_IF "(" <expresion> ")" "{" <sentencias> "}" | PR_IF "(" <expresion> ")" "{" <sentencias> "}" <sentencia_else>
+
+<sentencia_else> ::= PR_ELSE PR_IF "(" <expresion> ")" "{" <sentencias> "}" | PR_ELSE PR_IF "(" <expresion> ")" "{" <sentencias> "}" <sentencia_else> | PR_ELSE "{" <sentencias> "}"
+
+<sentencia_for> ::= PR_FOR "(" <tipo_dato> ID "=" <expresion> ";" ID "<" ENTERO ";" ID "++" ")" "{" <sentencias> "}" | PR_FOR "(" <tipo_dato> ID "=" <expresion> ";" ID "<=" ENTERO ";" ID "++" ")" "{" <sentencias> "}"
+
+<sentencia_switch> ::= PR_SWITCH "(" ID ")" "{" <sentencias_case> "}"
+
+<sentencias_case> ::= PR_CASE <expresion> ":" <sentencias> <uso_break> <sentencias_case> | PR_DEFAULT ":" <sentencia> | ε
+
+<uso_break> ::= PR_BREAK ";"
+
+<sentencia_while> ::= PR_WHILE "(" <expresion> ")" "{" <sentencias> "}"
+
+<sentencia_do_while> ::= PR_DO "{" <sentencias> "}" PR_WHILE "(" <expresion> ")" ";"
+
+<funciones> ::= <funcion> <funciones> | <funcion>
+
+<funcion> ::= PR_VOID ID "(" <expresion> ")" "{" <sentencias> "}" | PR_VOID ID "(" ")" "{" <sentencias> "}"
