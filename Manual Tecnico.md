@@ -10,7 +10,7 @@ El proposito es que el estudiante entienda los conceptos de la creacion de un co
 ## Requisitos del Sistema para NetBeans
 
 ### Requisitos del Sistema Operativo
-- **Sistema Operativo**: NetBeans es compatible con varios sistemas operativos, incluyendo Windows, macOS y Linux. Asegúrate de que tu sistema operativo esté actualizado y sea compatible con NetBeans 12.9.
+- **Sistema Operativo**: Windows, macOS y Linux.
 
 ### Hardware
 - **Procesador**: Un procesador de al menos 1 GHz o superior.
