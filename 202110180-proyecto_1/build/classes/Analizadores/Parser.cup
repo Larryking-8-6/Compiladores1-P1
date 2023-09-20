@@ -1,0 +1,318 @@
+/* 1. Package e importaciones */
+package Analizadores; 
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// 2. Codigo para el parser, variables, metodos 
+parser code 
+{:
+    //Clases, objetos, variables, lista, etc... en sintaxis java    
+    //Creo una lista de tipo String llamada 'salidas', donde guardare cada uno de las salidas analizadas
+    //Para el proyecto se sugiere HashMap
+    public List<String> salidas = new ArrayList<String>();
+    public Map<String, Double> mapaDouble = new HashMap<>();    
+    public Map<String, String> mapaString = new HashMap<>();
+
+public void mostrarIntGlobales(){
+    for (Map.Entry<String, Double> entry : mapaDouble.entrySet()) {
+        System.out.println("Variable global "+entry.getKey() + " vale " + entry.getValue());
+        if(entry.getValue() == null){
+            mapaDouble.put(entry.getKey(),0.0);
+        }
+    }
+}
+
+public void mostrarStringGlobales(){
+    for (Map.Entry<String, String> entry : mapaString.entrySet()) {
+        System.out.println("Variable global " + entry.getKey() + " vale " + entry.getValue());
+        if(entry.getValue() == null){
+            mapaString.put(entry.getKey(),entry.getKey());
+        }
+    }
+}
+    public String titulo = "titulo";
+    public List<String> ejeX = new ArrayList<String>();
+    public List<String> ejeY = new ArrayList<String>();
+    public List<Double> valores = new ArrayList<>();
+    public String tituloX = "tituloX";
+    public String tituloY = "tituloY";
+
+public void agregarValor(String a){
+    try {   
+           double decimal = Double.parseDouble(a);
+           valores.add(decimal);
+        }catch (Exception ex) {
+            System.out.println("Error al recibir valor, se ingresara un 0");
+            valores.add(0.0);
+        }
+}
+public void agregarString(String a){
+    try {   
+           ejeX.add(a+"");
+        }catch (Exception ex) {
+            System.out.println("Error al recibir texto, se ingresara un 0");
+           ejeX.add("texto");
+        }
+}
+:} 
+
+// 3. Terminales 
+terminal String PTCOMA,PARIZQ,PARDER,LLAVDER,LLAVIZQ,CORDER,CORIZQ,IGUAL,PUNTO,COMA, DOSPUNTOS, DOLLAR;
+terminal String MAS,MENOS,POR,DIVIDIDO;
+terminal String MENORQUE,MAYORQUE,EQUALS,MAYOROIGUAL,MENOROIGUAL,DISTINTO;
+terminal String AND,OR,NOT;
+terminal String ENTERO;
+terminal String DECIMAL;
+terminal String BOOLEANO;
+terminal String ID;
+terminal String STR,CHAR;
+terminal String UMENOS;
+terminal String PR_VOID;
+terminal String PR_MAIN,PR_DGLOBALES ;
+terminal String PR_INT;
+terminal String PR_STRING, PR_CHAR;
+terminal String PR_DOUBLE; 
+terminal String PR_BOOL; 
+terminal String PR_CONSOLE;
+terminal String PR_WRITE;
+terminal String PR_NEWVALOR;
+terminal String PR_IF, PR_ELSE, PR_FOR, PR_SWITCH, PR_CASE, PR_DEFAULT, PR_BREAK,PR_WHILE, PR_DO;
+terminal String PR_GBARRAS, PR_GPIE, PR_TITULO, PR_EJEX, PR_VALORES, PR_TITULOX, PR_TITULOY;
+terminal String vacio;
+
+// 4. No Terminales
+non terminal ini, entradas;
+non terminal sentencias, sentencia;
+non terminal funciones, funcion, funcion_globales;
+non terminal sentencias_globales, sentencia_global;
+non terminal  funcion_grafica, valor_string, valor_double;
+non terminal sentencias_graficas, sentencia_grafica;
+non terminal elementos_string, elementos_double;
+non terminal sentencia_print;
+non terminal sentencia_declaracion,sentencia_globales;
+non terminal sentenciaIf, sentenciaElse, sentenciaSwitch, sentenciasCase,sentenciasExtra,usoBreak;
+non terminal sentenciaFor, sentenciaDoWhile, sentenciaWhile;
+non terminal expresion;
+non terminal tipo_dato;
+non terminal lista;
+non terminal elementos, referencia_json ;
+non terminal archivo_json;
+non terminal miembro;
+
+// 5. Precedencias
+precedence left MAS,MENOS,COMA;
+precedence left POR,DIVIDIDO;
+precedence left  MENORQUE,MAYORQUE,EQUALS,MAYOROIGUAL,MENOROIGUAL,DISTINTO;
+precedence left AND,OR;
+precedence right UMENOS; 
+
+precedence right UMENOS; 
+
+// 6. Producciones
+start with ini; 
+ini::= entradas
+;
+
+entradas ::= PR_VOID PR_MAIN PARIZQ PARDER LLAVIZQ sentencias:a LLAVDER
+            {: String salida="def main() :{\n " + a + "\n}\nf__name__ = “__main__”: \n\tmain()";
+                RESULT=salida; 
+                salidas.add(salida);:}
+            |archivo_json:a {:RESULT=a; salidas.add(""+a);:}
+            
+;
+
+sentencias ::= sentencias:a sentencia:b {:RESULT=a + "\n"+b;:}
+              |sentencias:a error:b     {:RESULT= a + "\n #Error: "+b+"\n "+b;:}
+              |sentencia:a  {:RESULT=a;:}
+              |expresion:a  {:RESULT=a;:}
+; 
+
+funciones ::= PR_VOID ID:a PARIZQ expresion:b PARDER LLAVIZQ sentencias:c LLAVDER 
+        {:RESULT="def "+ a +"("+b+"):{\n"+c+"\n}"; System.out.println("Debo retornar esto: def "+ a +"("+b+"):{\n"+c+"\n}");:}
+             |PR_VOID ID:a PARIZQ PARDER LLAVIZQ sentencias:c LLAVDER 
+        {:RESULT="def "+ a +"():{\n"+c+"\n}";  System.out.println("Debo retornar esto: def "+ a +"():{\n"+c+"\n}");:}
+;
+
+funcion_globales ::= PR_VOID PR_DGLOBALES PARIZQ PARDER LLAVIZQ sentencias_globales:a LLAVDER
+    {: RESULT="def DefinirGlobales() :{\n " + a + "\n}"; :}
+;
+
+sentencias_globales ::= sentencia_global:a sentencias_globales:b {:RESULT=a + "\n"+b;:}
+                        |sentencia_global:a     {:RESULT=a;:}
+;
+
+sentencia_global ::= PR_STRING ID:a IGUAL STR:b PTCOMA 
+                {:RESULT="String "+a+" = "+b+ ";";  mapaString.put(a,b); mostrarStringGlobales();:}
+                    |PR_STRING ID:a IGUAL referencia_json:b PTCOMA 
+                {:RESULT="String "+a+" = "+b+";"; mapaString.put(a,mapaString.get(b)); mostrarStringGlobales();:}
+                    |PR_DOUBLE ID:a IGUAL DECIMAL:b PTCOMA 
+                {:RESULT="Double "+a+" = "+b+";"; mapaDouble.put(a,Double.parseDouble(b)); mostrarIntGlobales();:}
+                    |PR_DOUBLE ID:a IGUAL referencia_json:b PTCOMA 
+                {:RESULT="Double "+a+" = "+b+";"; mapaDouble.put(a,mapaDouble.get(b)); mostrarIntGlobales();:}
+;
+
+
+funcion_grafica ::= PR_VOID PR_GBARRAS PARIZQ PARDER LLAVIZQ sentencias_graficas:a LLAVDER
+    {: RESULT="def GraficaBarras() :{\n " + a + "\n}"; :}
+                | PR_VOID PR_GPIE PARIZQ PARDER LLAVIZQ sentencias_graficas:a LLAVDER
+    {: RESULT="def DefinirGlobales() :{\n " + a + "\n}"; :}
+;
+
+sentencias_graficas ::= sentencia_grafica:a sentencias_graficas:b {:RESULT=a + "\n"+b;:}
+                        | sentencia_grafica:a     {:RESULT=a;:}
+;
+
+sentencia_grafica ::= PR_STRING PR_TITULO IGUAL valor_string:a PTCOMA     
+                {:RESULT="String titulo = "+a+";"; titulo = a+""; System.out.println("Valor titulo: " + titulo) ; :}
+
+                    | PR_STRING PR_TITULOX IGUAL valor_string:a PTCOMA     
+                {:RESULT="String tituloX = "+a+";"; tituloX = a+"";System.out.println("Valor tituloX: " + tituloX) ;:}
+
+                    | PR_STRING PR_TITULOY IGUAL valor_string:a PTCOMA     
+                {:RESULT="String tituloY = "+a+";"; tituloY = a+"";System.out.println("Valor tituloY: " + tituloY) ;:}
+
+                    | PR_STRING CORIZQ CORDER PR_EJEX IGUAL LLAVIZQ elementos_string:a LLAVDER PTCOMA     
+                {:RESULT="String [] ejeX = {"+a+"};";:}
+
+                    | PR_DOUBLE CORIZQ CORDER PR_VALORES IGUAL LLAVIZQ elementos_double:a LLAVDER PTCOMA     
+                {:RESULT="int [] valores = {"+a+"};";:}
+;
+elementos_double ::= valor_double:a {: RESULT = a;  agregarValor(a+"");:}
+        | elementos_double:a COMA elementos_double :b {:RESULT=a+","+b;:}
+;
+valor_double ::= DECIMAL:a {:RESULT=a;:}
+                | referencia_json:a {:RESULT=mapaDouble.get(a);:}
+                | ID:a {:RESULT=mapaDouble.get(a);:}
+;
+
+elementos_string ::= valor_string:a  {: RESULT = a; agregarString(a+"");:}
+        | elementos_string:a COMA elementos_string :b {:RESULT=a+","+b+"";:}
+;
+valor_string ::= STR:a {:RESULT=a;:}
+                | referencia_json:a {:RESULT=mapaString.get(a);:}
+                | ID:a {:RESULT=mapaString.get(a);:}
+;
+sentencia ::= sentencia_print:a     {:RESULT=a;:}
+            | sentencia_declaracion:a   {:RESULT=a;:}
+            | sentencia_globales:a      {:RESULT=a;:}
+            | sentenciaIf:a   {:RESULT=a;:}
+            | sentenciaFor:a  {:RESULT=a;:}
+            | sentenciaSwitch:a  {:RESULT=a;:}
+            | sentenciaWhile:a   {:RESULT=a;:}
+            | sentenciaDoWhile:a   {:RESULT=a;:}
+            | funcion_globales:a     {:RESULT=a;:}
+            | funcion_grafica:a     {:RESULT=a;:}
+            | funciones:a     {:RESULT=a;:}
+;
+
+sentenciaIf ::= PR_IF PARIZQ expresion:a PARDER LLAVIZQ sentencias:b LLAVDER {: RESULT="if "+ a +":{\n" + b + "\n}"; :}
+                |PR_IF PARIZQ expresion:a PARDER LLAVIZQ sentencias:b LLAVDER sentenciaElse:c {: RESULT="if "+ a +":{\n" + b + "\n}"+c; :}
+;
+
+sentenciaElse ::= PR_ELSE PR_IF PARIZQ expresion:a PARDER LLAVIZQ sentencias:b LLAVDER  {: RESULT="\n elif "+ a +":{\n" + b + "\n}"; :}
+                |PR_ELSE PR_IF PARIZQ expresion:a PARDER LLAVIZQ sentencias:b LLAVDER  sentenciaElse:c {: RESULT="\nelif "+ a +":{\n" + b + "\n}"+c; :}
+                |PR_ELSE LLAVIZQ sentencias:b LLAVDER  {: RESULT="else :{\n" + b + "\n}"; :}
+;
+
+sentenciaFor ::= PR_FOR PARIZQ tipo_dato ID IGUAL expresion PTCOMA ID:a MENORQUE ENTERO:b PTCOMA ID MAS MAS PARDER LLAVIZQ sentencias:c LLAVDER 
+{: RESULT="for "+ a +" in range(1,"+b+"):{\n"+c+"\n}"; :}
+                |PR_FOR PARIZQ tipo_dato ID IGUAL expresion PTCOMA ID:a MENOROIGUAL ENTERO:b PTCOMA ID MAS MAS PARDER LLAVIZQ sentencias:c LLAVDER 
+                {: RESULT="for "+ a +" in range(1,"+b+"):{\n"+c+"\n}"; :}
+;
+
+sentenciaSwitch ::= PR_SWITCH PARIZQ ID:a PARDER LLAVIZQ sentenciasCase:b LLAVDER  
+{: RESULT="def switch(case, "+ a +"):{\n" + "switcher = { " + b + "\n} }"; :}
+;
+
+sentenciasCase ::= PR_CASE expresion:a DOSPUNTOS sentencias:b usoBreak  sentenciasCase:c {: RESULT= a+": " + b+ ", \n " + c; :}
+                | PR_CASE expresion:a DOSPUNTOS sentencias:b sentenciasCase:c {: RESULT= a+": " + b+ ", \n " + c; :}
+                | PR_DEFAULT DOSPUNTOS sentencia:b {: RESULT="4: " + b+ ","; :}
+;
+usoBreak ::=  PR_BREAK PTCOMA
+;
+sentenciasExtra ::= ID:a IGUAL expresion:b PTCOMA sentencias:c {: RESULT=a+"=" + b+ ";\n"+c; :}
+;
+
+sentenciaWhile ::= PR_WHILE PARIZQ expresion:a PARDER LLAVIZQ sentencias:b LLAVDER {: RESULT="while "+ a +":{\n" + b + "\n}"; :}
+;
+
+sentenciaDoWhile ::= PR_DO LLAVIZQ sentencias:b LLAVDER PR_WHILE PARIZQ expresion:a PARDER PTCOMA
+    {: RESULT="while True:{"+ b +"if ("+a+"):{ \n break \n}"+"\n}"; :}
+;
+
+
+sentencia_print ::= PR_CONSOLE PUNTO PR_WRITE PARIZQ expresion:a PARDER PTCOMA
+    {:    
+       System.out.println("Debo retornar esto: print(" + a +");" );
+       //Inserto en la lista de salidas de la expresión evaluada
+       //salidas.add("print(" + a + ")");
+       RESULT="print(" + a + ");";
+    :}
+;
+
+sentencia_declaracion ::= tipo_dato:a ID:b IGUAL expresion:c PTCOMA {:RESULT=a+" "+b+" = "+c+";\n";:}
+                        |ID:b IGUAL expresion:c PTCOMA {:RESULT=b+" = "+c+";\n";:}
+                        |tipo_dato:a ID:b PTCOMA    {:RESULT=a+" "+b+";";:}
+                        |tipo_dato:a CORIZQ CORDER ID:b IGUAL lista:c PTCOMA {:RESULT= a +" [] "+b+ " = " +c+ ";" ;:};
+
+lista ::= LLAVIZQ elementos:a LLAVDER {:RESULT="[" +a+ "]";:}
+;
+
+elementos ::= expresion:a   {:RESULT=""+a;:}
+            | elementos:a COMA elementos:b {:RESULT= ""+a + "," + b+"";:}
+;
+
+tipo_dato ::= PR_INT    {:RESULT="int";:}
+            |PR_DOUBLE  {:RESULT="double";:}
+            |PR_STRING {:RESULT="string";:}
+            |PR_BOOL    {:RESULT="bool";:}
+            |PR_CHAR    {:RESULT="char";:}
+;
+
+expresion ::= expresion:a MAS expresion:b {: RESULT = a + " + " + b; :}
+            | expresion:a POR expresion:b {: RESULT = a + " * " + b; :}
+            | expresion:a MENOS expresion:b {: RESULT = a + " - " + b; :}
+            | expresion:a UMENOS expresion:b {: RESULT = a + " - " + b; :}
+            | expresion:a DIVIDIDO expresion:b {: RESULT = a + " / " + b; :}
+            | expresion:a MAYORQUE expresion:b {: RESULT = a + " > " + b; :}
+            | expresion:a MENORQUE expresion:b {: RESULT = a + " < " + b; :}
+            | expresion:a MAYOROIGUAL expresion:b {: RESULT = a + " >= " + b; :}
+            | expresion:a MENOROIGUAL expresion:b {: RESULT = a + " <= " + b; :}
+            | expresion:a EQUALS expresion:b {: RESULT = a + " == " + b; :}
+            | expresion:a DISTINTO expresion:b {: RESULT = a + " != " + b; :}
+            | expresion:a AND expresion:b {: RESULT = a + " and " + b; :}
+            | expresion:a OR expresion:b {: RESULT = a + " or " + b; :}
+            | NOT expresion:b {: RESULT = " not " + b; :}
+            | PARIZQ expresion:a PARDER {:RESULT="("+a+")";:} 
+            | ENTERO:a {:RESULT=a;:}
+            | DECIMAL:a {:RESULT=a;:}
+            | ID:a {:RESULT=a;:}
+            | STR:a {:RESULT=a;:}
+            | CHAR:a {:RESULT=a;:}
+            | BOOLEANO:a {:RESULT=a;:}
+            | referencia_json:a {:RESULT=a;:}
+;
+
+referencia_json ::= DOLLAR LLAVIZQ PR_NEWVALOR COMA STR:a COMA STR:b LLAVDER 
+                {:RESULT=/*"${NewValor,"+ a + "," +*/ b /*+"}"*/ ; System.out.println("${NewValor,"+ a + "," + b+"}");:}
+;
+archivo_json ::= LLAVIZQ miembro:a LLAVDER  {:RESULT="{"+a+"}";:}
+;
+
+miembro ::= STR:a DOSPUNTOS STR :b {: RESULT = a + " equals " + b;  System.out.println(a +"  vale "+ b); 
+                                            mapaString.put(a,b);:}
+        |STR:a DOSPUNTOS DECIMAL:b {: RESULT = a + " equals " + b;  System.out.println(a +"  vale "+ b); 
+                                          mapaDouble.put(a,Double.parseDouble(b));:}
+        | miembro:a COMA miembro:b {:RESULT=a+",\n"+b+"\n";:}
+;
+/*
+
+| f:a {:RESULT=a;:}
+f ::= ENTERO:a {:RESULT=a;:}
+     |DECIMAL:a {:RESULT=a;:}
+     
+     |BOOLEANO:a {:RESULT=a;:}
+;*/
