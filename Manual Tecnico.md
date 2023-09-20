@@ -45,4 +45,23 @@ jflex-full1.7.0.jar, esta es una versión más antigua de JFlex, que también se
 - java-cup-11b-runtime.jar:
 Esta es la biblioteca de tiempo de ejecución necesaria para ejecutar analizadores sintácticos generados por CUP. Si tienes un parser generado por CUP en tu proyecto, necesitarás esta biblioteca para que funcione correctamente.
 
-### Librerias internas
+### Funciones y clases
+
+| Función o Clase           | Descripción                                                                                                                                                  |
+|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `BufferedWriter`          | Se utiliza para escribir caracteres en un búfer de salida y proporciona métodos para escribir texto en archivos.                                           |
+| `FileOutputStream`        | Proporciona un flujo de salida para escribir datos en un archivo.                                                                                           |
+| `FileWriter`              | Se utiliza para escribir caracteres en un archivo.                                                                                                           |
+| `File`                    | Representa un archivo o directorio en el sistema de archivos.                                                                                                 |
+| `BufferedReader`          | Se utiliza para leer caracteres de un flujo de entrada de caracteres en búfer.                                                                              |
+| `StringReader`            | Se utiliza para leer caracteres desde una cadena de texto.                                                                                                     |
+| `Logger`                  | Proporciona un registro de eventos y mensajes para el seguimiento y diagnóstico de aplicaciones.                                                            |
+| `Parser`                  | Representa un analizador sintáctico generado por JavaCUP para analizar la sintaxis del código fuente.                                                        |
+| `Scanner`                 | Representa un analizador léxico generado por JFlex para analizar el código fuente y generar tokens.                                                        |
+| `ArrayList`               | Implementa una lista dinámica en Java que puede almacenar elementos en una secuencia ordenada.                                                              |
+| `List`                    | Define una interfaz que representa una colección ordenada de elementos.                                                                                      |
+
+Estas son las funciones y clases que se importan en el código proporcionado y sus breves descripciones de uso. Cada una de estas funciones y clases cumple un papel específico en el código y contribuye a su funcionalidad.
+
+
+
