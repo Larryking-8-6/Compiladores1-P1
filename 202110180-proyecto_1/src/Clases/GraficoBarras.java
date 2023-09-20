@@ -66,4 +66,3 @@ public class GraficoBarras {
         this.valores = valores;
     }
 }
-

@@ -1304,5 +1304,4 @@ public class Scanner implements java_cup.runtime.Scanner {
     }
   }
 
-
 }

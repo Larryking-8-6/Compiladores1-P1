@@ -21,7 +21,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import static Grafica.AnalizadorLexico.reemplazarComentarios;
+import static Grafica.LexicoReportes.reemplazarComentarios;
 import static Grafica.Main.graficoBarrasGlobal;
 import static Grafica.Main.graficoPieGlobal;
 import org.jfree.chart.ChartFactory;
@@ -501,8 +501,8 @@ if (result == JFileChooser.APPROVE_OPTION) {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       String texto = AnalizadorLexico.reemplazarComentarios(jTextArea1.getText());
-       String contenido = AnalizadorLexico.Traducir(texto);
+       String texto = LexicoReportes.reemplazarComentarios(jTextArea1.getText());
+       String contenido = LexicoReportes.Traducir(texto);
        jTextArea2.setText(contenido);
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -525,16 +525,16 @@ if (result == JFileChooser.APPROVE_OPTION) {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         System.out.println();
-    String texto = AnalizadorLexico.reemplazarComentarios(jTextArea1.getText());
+    String texto = LexicoReportes.reemplazarComentarios(jTextArea1.getText());
     String contenido;
     if (analizador == 'S') {
-        contenido = AnalizadorLexico.erroresLexicosStatPy(texto);
+        contenido = LexicoReportes.erroresLexicosStatPy(texto);
         GuardarGrafico.writeToFile("Reportes/Errores.html", contenido);
     } else {
-        contenido = AnalizadorLexico.erroresLexicosJSON(texto);
+        contenido = LexicoReportes.erroresLexicosJSON(texto);
         GuardarGrafico.writeToFile("Reportes/Errores.html", contenido);
     }
-    contenido = AnalizadorLexico.ReporteLexemas(texto);
+    contenido = LexicoReportes.ReporteLexemas(texto);
     GuardarGrafico.writeToFile("Reportes/Lexemas.html", contenido);
 
     // Después de guardar el archivo, abrimos automáticamente el archivo con el navegador predeterminado
@@ -661,12 +661,12 @@ private void abrirArchivo(String filePath) {
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
 System.out.println();
-String texto = AnalizadorLexico.reemplazarComentarios(jTextArea1.getText());
+String texto = LexicoReportes.reemplazarComentarios(jTextArea1.getText());
 String contenido;
 if (analizador == 'S') {
-    contenido = AnalizadorLexico.erroresLexicosStatPy(texto);
+    contenido = LexicoReportes.erroresLexicosStatPy(texto);
 } else {
-    contenido = AnalizadorLexico.erroresLexicosJSON(texto);
+    contenido = LexicoReportes.erroresLexicosJSON(texto);
 }
 GuardarGrafico.writeToFile("Reportes/Errores.html", contenido);
 
@@ -676,8 +676,8 @@ abrirArchivo("Reportes/Errores.html");
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
     System.out.println();
-String texto = AnalizadorLexico.reemplazarComentarios(jTextArea1.getText());
-String contenido = AnalizadorLexico.ReporteLexemas(texto);
+String texto = LexicoReportes.reemplazarComentarios(jTextArea1.getText());
+String contenido = LexicoReportes.ReporteLexemas(texto);
 GuardarGrafico.writeToFile("Reportes/Lexemas.html", contenido);
 
 abrirArchivo("Reportes/Lexemas.html");
