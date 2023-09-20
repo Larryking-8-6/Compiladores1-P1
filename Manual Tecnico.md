@@ -38,7 +38,7 @@ CUP (Constructor de Analizadores Sintácticos en Java) es una herramienta que se
 JFreeChart es una biblioteca de gráficos en Java que permite crear una variedad de gráficos, como gráficos de barras, gráficos de líneas y gráficos de tartas. Esta biblioteca es útil cuando necesitas visualizar datos en tu aplicación Java, como datos estadísticos o de rendimiento.
 
 - jflex-1.9.1.jar:
-- 
+ 
 jflex-full1.7.0.jar, esta es una versión más antigua de JFlex, que también se utiliza para generar analizadores léxicos personalizados en Java. Si estás utilizando una versión específica de JFlex en tu proyecto, puedes necesitar esta biblioteca en lugar de la versión más reciente, esto lo deje ya que no me corria el programa si lo borraba ya que inicie con la misma.
 
 - java-cup-11b-runtime.jar:
