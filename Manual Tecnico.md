@@ -20,7 +20,8 @@ El proposito es que el estudiante entienda los conceptos de la creacion de un co
 - **Java Development Kit en este caso la version 16.0 (JDK 16):
 El Kit de Desarrollo de Java (JDK) 16 es la plataforma de desarrollo principal que proporciona todas las herramientas y bibliotecas necesarias para desarrollar y ejecutar aplicaciones Java. JDK 16 incluye el compilador Java, las bibliotecas estándar y otras herramientas esenciales para la programación en Java
 
-### Librerias
+### Librerias generales
+
 - jflex-full1.7.0.jar:
 
 JFlex (Generador de Analizadores Léxicos en Java) es una herramienta que se utiliza para generar analizadores léxicos personalizados en Java. Esta biblioteca es necesaria para compilar y ejecutar el analizador léxico de tu proyecto. Permite definir reglas de análisis léxico para tu lenguaje de programación.
@@ -43,3 +44,5 @@ jflex-full1.7.0.jar, esta es una versión más antigua de JFlex, que también se
 
 - java-cup-11b-runtime.jar:
 Esta es la biblioteca de tiempo de ejecución necesaria para ejecutar analizadores sintácticos generados por CUP. Si tienes un parser generado por CUP en tu proyecto, necesitarás esta biblioteca para que funcione correctamente.
+
+### Librerias internas
